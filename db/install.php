@@ -31,6 +31,6 @@
 function xmldb_filter_ilos_oembed_install() {
     global $CFG;
 
-    filter_set_global_state('filter/ilos-oembed', TEXTFILTER_ON);
+    filter_set_global_state('filter/ilos_oembed', TEXTFILTER_ON);
 }
 

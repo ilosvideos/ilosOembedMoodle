@@ -125,6 +125,7 @@ function filter_ilos_oembed_handle_error($json)
  * @param $url URL for the Oembed request
  * @return mixed|null|string The HTTP response object from the OEmbed request.
  */
+
 function filter_ilos_oembed_curlcall($url, $noCache = false) {
    static $cache;
 
@@ -141,19 +142,7 @@ function filter_ilos_oembed_curlcall($url, $noCache = false) {
 
     // Check if curl call fails.
     if ($curl->errno != CURLE_OK) {
-        // Check if error is due to network connection.
-        if (in_array($curl->errno, [6, 7, 28])) {
-            // Try curl call up to 3 times.
-            usleep(50000);
-            $retryno = (!is_int($retryno)) ? 0 : $retryno+1;
-            if ($retryno < 3) {
-                return $this->getoembeddata($url, $retryno);
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+        return null;
     }
 
     $cache->set(md5($url), $ret);

@@ -33,10 +33,4 @@ if ($ADMIN->fulltree) {
     $torf = array('1' => new lang_string('yes'), '0' => new lang_string('no'));
     $item = new admin_setting_configselect('filter_ilos_oembed/ilos', new lang_string('ilos', 'filter_ilos_oembed'), '', 1, $torf);
     $settings->add($item);
-
-    $retrylist = array('0' => new lang_string('none'), '1' => new lang_string('once', 'filter_ilos_oembed'),
-                                                  '2' => new lang_string('times', 'filter_ilos_oembed', '2'),
-                                                  '3' => new lang_string('times', 'filter_ilos_oembed', '3'));
-    $item = new admin_setting_configselect('filter_ilos_oembed/retrylimit', new lang_string('retrylimit', 'filter_ilos_oembed'), '', '1', $retrylist);
-    $settings->add($item);
 }
