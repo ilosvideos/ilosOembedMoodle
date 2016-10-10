@@ -27,5 +27,4 @@
 
 $string['filtername'] = 'Filtro oEmbed';
 $string['ilos'] = 'ilos';
-$string['lazyload'] = 'Delay Embed Loading (Lazyload)';
 $string['connection_error'] = 'Errore durante l\'accesso al media incorporato. Prova ad aggiornare la pagina.';

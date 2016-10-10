@@ -44,16 +44,6 @@ class filter_oembed extends moodle_text_filter {
      */
     public function setup($page, $context) {
         // This only requires execution once per request.
-        static $jsinitialised = false;
-        if (get_config('filter_oembed', 'lazyload')) {
-            if (empty($jsinitialised)) {
-                $page->requires->yui_module(
-                        'moodle-filter_oembed-lazyload',
-                        'M.filter_oembed.init_filter_lazyload',
-                        array(array('courseid' => 0)));
-                $jsinitialised = true;
-            }
-        }
     }
 
     /**
@@ -192,28 +182,5 @@ function filter_oembed_vidembed($json, $params = '') {
         $embed = str_replace('?feature=oembed', '?feature=oembed'.htmlspecialchars($params), $embed );
     }
 
-    if (get_config('filter_oembed', 'lazyload')) {
-        $embed = htmlspecialchars($embed);
-        $dom = new DOMDocument();
-
-        // To surpress the loadHTML Warnings.
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($json['html']);
-        libxml_use_internal_errors(false);
-
-        // Get height and width of iframe.
-        $height = $dom->getElementsByTagName('iframe')->item(0)->getAttribute('height');
-        $width = $dom->getElementsByTagName('iframe')->item(0)->getAttribute('width');
-
-        $embedcode = '<a class="lvoembed lvvideo" data-embed="'.$embed.'"';
-        $embedcode .= 'href="#" data-height="'. $height .'" data-width="'. $width .'"><div class="filter_oembed_lazyvideo_container">';
-        $embedcode .= '<img class="filter_oembed_lazyvideo_placeholder" src="'.$json['thumbnail_url'].'" />';
-        $embedcode .= '<div class="filter_oembed_lazyvideo_title"><div class="filter_oembed_lazyvideo_text">'.$json['title'].'</div></div>';
-        $embedcode .= '<span class="filter_oembed_lazyvideo_playbutton"></span>';
-        $embedcode .= '</div></a>';
-    } else {
-        $embedcode = $embed;
-    }
-
-    return $embedcode;
+    return $embed;
 }
