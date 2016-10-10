@@ -56,7 +56,6 @@ class filter_ilos_oembed extends moodle_text_filter {
      * @return string String containing processed HTML.
      */
     public function filter($text, array $options = array()) {
-        global $CFG;
 
         if (!is_string($text) or empty($text)) {
             // Non string data can not be filtered anyway.
@@ -73,7 +72,7 @@ class filter_ilos_oembed extends moodle_text_filter {
 
         if (get_config('filter_ilos_oembed', 'ilos')) {
             $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
-            $newtext = preg_replace_callback($search, 'filter_ilos_oembed_iloscallback', $newtext);
+            $newtext = preg_replace_callback($search, array(&$this, 'filter_ilos_oembed_iloscallback'), $newtext);
         }
 
         if (empty($newtext) or $newtext === $text) {
@@ -85,93 +84,92 @@ class filter_ilos_oembed extends moodle_text_filter {
         return $newtext;
     }
 
-}
+    /**
+     * @param $link
+     * @return bool|string
+     */
+    private function filter_ilos_oembed_iloscallback($link) {
+        //global $CFG;
+        $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
+        $json = $this->filter_ilos_oembed_curlcall($url, true);
 
-//TODO make this more object oriented, create a class and call the class methods instead
-/**
- * Looks for links pointing to ilos content and processes them.
- *
- * @param $link HTML tag containing a link
- * @return string HTML content after processing.
- */
-function filter_ilos_oembed_iloscallback($link) {
-    global $CFG;
-    $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
-    $json = filter_ilos_oembed_curlcall($url, true);
+        $error = $this->filter_ilos_oembed_handle_error($json);
+        if($error === false)
+        {
+            $embedCode = $this->filter_ilos_oembed_vidembed($json);
+            return $embedCode;
+        }
 
-    $error = filter_ilos_oembed_handle_error($json);
-    if($error === false)
+        return $error;
+    }
+
+    /**
+     * Handles if the oembed service returned any error. For instance: You don't have permission to see the video
+     * @param $json
+     * @return bool|string
+     */
+    private function filter_ilos_oembed_handle_error($json)
     {
-        $embedCode = filter_ilos_oembed_vidembed($json);
-        return $embedCode;
+        //TODO maybe add link to the video?
+        if (preg_match('#^404|401|501#', $json)) {
+            return "Video could not be displayed: ".$json;
+        }
+
+        return false;
     }
 
-    return $error;
-}
+    /**
+     * Makes the OEmbed request to the service that supports the protocol.
+     *
+     * @param $url URL for the Oembed request
+     * @return mixed|null|string The HTTP response object from the OEmbed request.
+     */
+    private function filter_ilos_oembed_curlcall($url, $noCache = false) {
+        static $cache;
 
-function filter_ilos_oembed_handle_error($json)
-{
-    //TODO maybe add link to the video?
-    if (preg_match('#^404|401|501#', $json)) {
-        return "Video could not be displayed: ".$json;
+        if (!isset($cache)) {
+            $cache = cache::make('filter_ilos_oembed', 'embeddata');
+        }
+
+        if (!$noCache && $ret = $cache->get(md5($url))) {
+            return json_decode($ret, true);
+        }
+
+        $curl = new \curl();
+        $ret = $curl->get($url);
+
+        // Check if curl call fails.
+        if ($curl->errno != CURLE_OK) {
+            return null;
+        }
+
+        $cache->set(md5($url), $ret);
+        $result = json_decode($ret, true);
+        return $result;
     }
 
-    return false;
-}
+    /**
+     * Return the HTML content to be embedded given the response from the OEmbed request.
+     * It returns the embeddable HTML from the OEmbed request. An error message is returned if there was an error during
+     * the request.
+     *
+     * @param array $json Response object returned from the OEmbed request.
+     * @param string $params Additional parameters to include in the embed URL.
+     * @return string The HTML content to be embedded in the page.
+     */
+    private function filter_ilos_oembed_vidembed($json, $params = '') {
 
+        if ($json === null) {
+            return '<h3>'. get_string('connection_error', 'filter_ilos_oembed') .'</h3>';
+        }
 
-/**
- * Makes the OEmbed request to the service that supports the protocol.
- *
- * @param $url URL for the Oembed request
- * @return mixed|null|string The HTTP response object from the OEmbed request.
- */
+        $embed = $json['html'];
 
-function filter_ilos_oembed_curlcall($url, $noCache = false) {
-   static $cache;
+        if ($params != ''){
+            $embed = str_replace('?feature=oembed', '?feature=oembed'.htmlspecialchars($params), $embed );
+        }
 
-    if (!isset($cache)) {
-        $cache = cache::make('filter_ilos_oembed', 'embeddata');
+        return $embed;
     }
 
-    if (!$noCache && $ret = $cache->get(md5($url))) {
-        return json_decode($ret, true);
-    }
-
-    $curl = new \curl();
-    $ret = $curl->get($url);
-
-    // Check if curl call fails.
-    if ($curl->errno != CURLE_OK) {
-        return null;
-    }
-
-    $cache->set(md5($url), $ret);
-    $result = json_decode($ret, true);
-    return $result;
-}
-
-/**
- * Return the HTML content to be embedded given the response from the OEmbed request.
- * This method returns the thumbnail image if we lazy loading is enabled. Ogtherwise it returns the
- * embeddable HTML returned from the OEmbed request. An error message is returned if there was an error during
- * the request.
- *
- * @param array $json Response object returned from the OEmbed request.
- * @param string $params Additional parameters to include in the embed URL.
- * @return string The HTML content to be embedded in the page.
- */
-function filter_ilos_oembed_vidembed($json, $params = '') {
-
-    if ($json === null) {
-        return '<h3>'. get_string('connection_error', 'filter_ilos_oembed') .'</h3>';
-    }
-
-    $embed = $json['html'];
-
-    if ($params != ''){
-        $embed = str_replace('?feature=oembed', '?feature=oembed'.htmlspecialchars($params), $embed );
-    }
-
-    return $embed;
 }
