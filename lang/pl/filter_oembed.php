@@ -27,5 +27,4 @@
 
 $string['filtername'] = 'ilos oEmbed Filter';
 $string['ilos'] = 'ilos';
-$string['lazyload'] = 'Opóźnij ładowanie osadzania (Lazyload)';
 $string['connection_error'] = 'Błąd podczas uzyskiwania dostępu do osadzonego elementu multimedialnego. Spróbuj odświeżyć stronę.';

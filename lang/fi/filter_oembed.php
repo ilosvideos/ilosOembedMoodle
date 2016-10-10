@@ -27,5 +27,4 @@
 
 $string['filtername'] = 'oEmbed-suodatin';
 $string['ilos'] = 'ilos';
-$string['lazyload'] = 'Lykkää upotetun median lataamista';
 $string['connection_error'] = 'Virhe upotetun median käytön aikana. Kokeile päivittää sivu.';

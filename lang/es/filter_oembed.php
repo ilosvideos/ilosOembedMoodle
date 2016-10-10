@@ -27,5 +27,4 @@
 
 $string['filtername'] = 'ilos oEmbed Filter';
 $string['ilos'] = 'ilos';
-$string['lazyload'] = 'Demorar carga integrada (Lazyload)';
 $string['connection_error'] = 'Error al acceder al medio integrado. Intente actualizar la página.';

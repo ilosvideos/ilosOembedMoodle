@@ -27,5 +27,4 @@
 
 $string['filtername'] = 'oEmbedフィルタ';
 $string['ilos'] = 'ilos';
-$string['lazyload'] = '遅延埋め込みロード (Lazyload)';
 $string['connection_error'] = '埋め込みメディアへのアクセス中にエラーが発生しました。ページを再読み込みしてください。';
