@@ -34,15 +34,6 @@ if ($ADMIN->fulltree) {
     $item = new admin_setting_configselect('filter_oembed/ilos', new lang_string('ilos', 'filter_oembed'), '', 1, $torf);
     $settings->add($item);
 
-    // New provider method.
-    $providers = \filter_oembed::get_supported_providers();
-    foreach ($providers as $provider) {
-        $enabledkey = 'provider_'.$provider.'_enabled';
-        $name = new lang_string('provider_'.$provider, 'filter_oembed');
-        $item = new \admin_setting_configselect('filter_oembed/'.$enabledkey, $name, '', 1, $torf);
-        $settings->add($item);
-    }
-
     $retrylist = array('0' => new lang_string('none'), '1' => new lang_string('once', 'filter_oembed'),
                                                   '2' => new lang_string('times', 'filter_oembed', '2'),
                                                   '3' => new lang_string('times', 'filter_oembed', '3'));

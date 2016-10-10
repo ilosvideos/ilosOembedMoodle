@@ -93,20 +93,6 @@ class filter_oembed extends moodle_text_filter {
             $newtext = preg_replace_callback($search, 'filter_oembed_iloscallback', $newtext);
         }
 
-        // New method for embed providers.
-        $providers = static::get_supported_providers();
-        $filterconfig = get_config('filter_oembed');
-        foreach ($providers as $provider) {
-            $enabledkey = 'provider_'.$provider.'_enabled';
-            if (!empty($filterconfig->$enabledkey)) {
-                $providerclass = '\filter_oembed\provider\\'.$provider;
-                if (class_exists($providerclass)) {
-                    $provider = new $providerclass();
-                    $newtext = $provider->filter($newtext);
-                }
-            }
-        }
-
         if (empty($newtext) or $newtext === $text) {
             // Error or not filtered.
             unset($newtext);
@@ -116,16 +102,6 @@ class filter_oembed extends moodle_text_filter {
         return $newtext;
     }
 
-    /**
-     * Return list of supported providers.
-     *
-     * @return array Array of supported providers.
-     */
-    public static function get_supported_providers() {
-        return [
-//            'docsdotcom', 'powerbi', 'officeforms'
-        ];
-    }
 }
 
 /**
@@ -136,17 +112,29 @@ class filter_oembed extends moodle_text_filter {
  */
 function filter_oembed_iloscallback($link) {
     global $CFG;
-    $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json'";
+    $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
     $json = filter_oembed_curlcall($url, true);
 
-    //no html code (something went wrong)
-    if(!$json["html"])
+    $error = filter_oembed_handle_error($json);
+    if($error === false)
     {
-        return "Something went wrong:".$json;
+        $embedCode = filter_oembed_vidembed($json);
+        return $embedCode;
     }
 
-    return filter_oembed_vidembed($json);
+    return $error;
 }
+
+function filter_oembed_handle_error($json)
+{
+    //TODO maybe add link to the video?
+    if (preg_match('#^404|401|501#', $json)) {
+        return "Video could not be displayed: ".$json;
+    }
+
+    return false;
+}
+
 
 /**
  * Makes the OEmbed request to the service that supports the protocol.
