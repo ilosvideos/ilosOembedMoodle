@@ -51,55 +51,14 @@ class filter_oembed_testcase extends basic_testcase {
      */
     public function test_filter() {
         return true;
-        $souncloudlink = '<p><a href="https://soundcloud.com/el-silenzio-fatal/enrique-iglesias-el-perdedor">soundcloud</a></p>';
-        $youtubelink = '<p><a href="https://www.youtube.com/watch?v=ns6gCZI-Nj8">Youtube</a></p>';
-        $officemixlink = '<p><a href="https://mix.office.com/watch/50ujrxsjvp9c">mix</a></p>';
-        $vimeolink = '<p><a href="http://vimeo.com/115538038">vimeo</a></p>';
-        $tedlink = '<p><a href="https://www.ted.com/talks/aj_jacobs_how_healthy_living_nearly_killed_me">Ted</a></p>';
-        $slidesharelink = '<p><a href="http://www.slideshare.net/timbrown/ideo-values-slideshare1">slideshare</a></p>';
-        $issuulink = '<p><a href="http://issuu.com/hujawes/docs/dehorew">issuu</a></p>';
-        $polleverywherelink = '<p><a href="https://www.polleverywhere.com/multiple_choice_polls/AyCp2jkJ2HqYKXc/web">';
-        $polleverywherelink .= '$popolleverywhere</a></p>';
+        $ilos = '<p><a href="https://app.ilosvideos.com/view/nacfQdQSXNUD">ilos video</a></p>';
 
-        $filterinput = $souncloudlink.$youtubelink.$officemixlink.$vimeolink.$tedlink.$slidesharelink.$issuulink;
-        $filterinput .= $polleverywherelink;
+        $filterInput = $ilos;
 
-        $filteroutput = $this->filter->filter($filterinput);
+        $filterOutput = $this->filter->filter($filterInput);
 
-        $youtubeoutput = '<iframe width="480" height="270" src="http://www.youtube.com/embed/ns6gCZI-Nj8?feature=oembed"';
-        $youtubeoutput .= ' frameborder="0" allowfullscreen></iframe>';
-        $this->assertContains($youtubeoutput, $filteroutput, 'Youtube filter fails');
+        $ilosOutput = '<iframe width="640" height="360" allowTransparency="true" mozallowfullscreen webkitallowfullscreen allowfullscreen style="background-color:transparent;" frameBorder="0" src="https://app.ilosvideos.com/embed/nacfQdQSXNUD"></iframe>';
+        $this->assertContains($ilosOutput, $filterOutput, 'Ilos filter fails');
 
-        $soundcloudoutput = '<iframe width="480" height="270" scrolling="no" frameborder="no"';
-        $soundcloudoutput .= ' src="https://w.soundcloud.com/player/?visual=true&url=http%3A%2F%2Fapi.soundcloud.com%';
-        $soundcloudoutput .= '2Ftracks%2F132183772&show_artwork=true&maxwidth=480&maxheight=270%27"></iframe>';
-        $this->assertContains($soundcloudoutput, $filteroutput, 'Soundcloud filter fails');
-
-        $officemixoutput = '<iframe width="480" height="320" src="https://mix.office.com/embed/50ujrxsjvp9c" frameborder="0"';
-        $officemixoutput .= ' allowfullscreen></iframe>';
-        $this->assertContains($officemixoutput, $filteroutput, 'Office mix filter fails');
-
-        $vimeooutput = '<iframe src="//player.vimeo.com/video/115538038" width="480" height="270" frameborder="0"';
-        $vimeooutput .= ' title="Snow Fun" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-        $this->assertContains($vimeooutput, $filteroutput, 'Vimeo filter fails');
-
-        $tedoutput = '<iframe src="https://embed-ssl.ted.com/talks/aj_jacobs_how_healthy_living_nearly_killed_me.html" width="480"';
-        $tedoutput .= ' height="270" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen>';
-        $tedoutput .= '</iframe>';
-        $this->assertContains($tedoutput, $filteroutput, 'Ted filter fails');
-
-        $issuuoutput = '<div data-url="http://issuu.com/hujawes/docs/dehorew" style="width: 525px; height: 322px;"';
-        $issuuoutput .= ' class="issuuembed"></div><script type="text/javascript" src="//e.issuu.com/embed.js" async="true">';
-        $issuuoutput .= '</script>';
-        $this->assertContains($issuuoutput, $filteroutput, 'Issuu filter fails');
-
-        $polleverywhereoutput = '<script src="http://www.polleverywhere.com/multiple_choice_polls/AyCp2jkJ2HqYKXc/web.js';
-        $polleverywhereoutput .= '?results_count_format=percent"></script>';
-        $this->assertContains($polleverywhereoutput, $filteroutput, 'Poll everywhare filter fails');
-
-        $slideshareoutput = '<iframe src="http://www.slideshare.net/slideshow/embed_code/29331355" width="427" height="356"';
-        $slideshareoutput .= ' frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;';
-        $slideshareoutput .= ' border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>';
-        $this->assertContains($slideshareoutput, $filteroutput, 'Slidershare filter fails');
     }
 }
