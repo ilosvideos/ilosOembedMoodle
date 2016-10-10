@@ -27,5 +27,4 @@
 
 $string['filtername'] = 'Filtr oEmbed';
 $string['ilos'] = 'ilos';
-$string['lazyload'] = 'Zpozdit načítání vložených prvků (opožděné načítání)';
 $string['connection_error'] = 'Při přístupu k vloženému médiu došlo k chybě. Zkuste aktualizovat stránku.';

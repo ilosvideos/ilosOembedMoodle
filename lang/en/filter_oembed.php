@@ -30,5 +30,4 @@ $string['ilos'] = 'ilos';
 $string['once'] = 'Once';
 $string['times'] = '{$a} times';
 $string['retrylimit'] = 'Limit to retry getting filtered content';
-$string['lazyload'] = 'Delay Embed Loading (Lazyload)';
 $string['connection_error'] = 'Error while accessing the embedded media. Please try refreshing the page.';
