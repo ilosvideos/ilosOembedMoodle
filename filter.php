@@ -87,6 +87,7 @@ class filter_ilos_oembed extends moodle_text_filter {
 
 }
 
+//TODO make this more object oriented, create a class and call the class methods instead
 /**
  * Looks for links pointing to ilos content and processes them.
  *
