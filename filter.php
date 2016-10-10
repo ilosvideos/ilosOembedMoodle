@@ -54,10 +54,6 @@ class filter_oembed extends moodle_text_filter {
                 $jsinitialised = true;
             }
         }
-        if (get_config('filter_oembed', 'provider_powerbi_enabled')) {
-            global $PAGE;
-            $PAGE->requires->yui_module('moodle-filter_oembed-powerbiloader', 'M.filter_oembed.init_powerbiloader');
-        }
     }
 
     /**
@@ -75,11 +71,7 @@ class filter_oembed extends moodle_text_filter {
             // Non string data can not be filtered anyway.
             return $text;
         }
-        // if (get_user_device_type() !== 'default'){
-            // no lazy video on mobile
-            // return $text;
 
-        // }
         if (stripos($text, '</a>') === false) {
             // Performance shortcut - all regexes below end with the </a> tag.
             // If not present nothing can match.
