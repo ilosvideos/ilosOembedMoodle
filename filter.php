@@ -15,9 +15,9 @@
 // along with Moodle-oembed-Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Filter for component 'filter_oembed'
+ * Filter for component 'filter_ilos_oembed'
  *
- * @package   filter_oembed
+ * @package   filter_ilos_oembed
  * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
@@ -28,13 +28,14 @@ define("ILOS_HOST", "cloud");
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/filelib.php');
+
 /**
  * Filter for processing HTML content containing links to media from services that support the OEmbed protocol.
  * The filter replaces the links with the embeddable content returned from the service via the Oembed protocol.
  *
- * @package    filter_oembed
+ * @package    filter_ilos_oembed
  */
-class filter_oembed extends moodle_text_filter {
+class filter_ilos_oembed extends moodle_text_filter {
 
     /**
      * Set up the filter using settings provided in the admin settings page.
@@ -70,9 +71,9 @@ class filter_oembed extends moodle_text_filter {
 
         $newtext = $text; // We need to return the original value if regex fails!
 
-        if (get_config('filter_oembed', 'ilos')) {
+        if (get_config('filter_ilos_oembed', 'ilos')) {
             $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
-            $newtext = preg_replace_callback($search, 'filter_oembed_iloscallback', $newtext);
+            $newtext = preg_replace_callback($search, 'filter_ilos_oembed_iloscallback', $newtext);
         }
 
         if (empty($newtext) or $newtext === $text) {
@@ -92,22 +93,22 @@ class filter_oembed extends moodle_text_filter {
  * @param $link HTML tag containing a link
  * @return string HTML content after processing.
  */
-function filter_oembed_iloscallback($link) {
+function filter_ilos_oembed_iloscallback($link) {
     global $CFG;
     $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
-    $json = filter_oembed_curlcall($url, true);
+    $json = filter_ilos_oembed_curlcall($url, true);
 
-    $error = filter_oembed_handle_error($json);
+    $error = filter_ilos_oembed_handle_error($json);
     if($error === false)
     {
-        $embedCode = filter_oembed_vidembed($json);
+        $embedCode = filter_ilos_oembed_vidembed($json);
         return $embedCode;
     }
 
     return $error;
 }
 
-function filter_oembed_handle_error($json)
+function filter_ilos_oembed_handle_error($json)
 {
     //TODO maybe add link to the video?
     if (preg_match('#^404|401|501#', $json)) {
@@ -124,11 +125,11 @@ function filter_oembed_handle_error($json)
  * @param $url URL for the Oembed request
  * @return mixed|null|string The HTTP response object from the OEmbed request.
  */
-function filter_oembed_curlcall($url, $noCache = false) {
+function filter_ilos_oembed_curlcall($url, $noCache = false) {
    static $cache;
 
     if (!isset($cache)) {
-        $cache = cache::make('filter_oembed', 'embeddata');
+        $cache = cache::make('filter_ilos_oembed', 'embeddata');
     }
 
     if (!$noCache && $ret = $cache->get(md5($url))) {
@@ -170,10 +171,10 @@ function filter_oembed_curlcall($url, $noCache = false) {
  * @param string $params Additional parameters to include in the embed URL.
  * @return string The HTML content to be embedded in the page.
  */
-function filter_oembed_vidembed($json, $params = '') {
+function filter_ilos_oembed_vidembed($json, $params = '') {
 
     if ($json === null) {
-        return '<h3>'. get_string('connection_error', 'filter_oembed') .'</h3>';
+        return '<h3>'. get_string('connection_error', 'filter_ilos_oembed') .'</h3>';
     }
 
     $embed = $json['html'];

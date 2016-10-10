@@ -15,9 +15,9 @@
 // along with Moodle-oembed-Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Filter for component 'filter_oembed'
+ * Filter for component 'filter_ilos_oembed'
  *
- * @package   filter_oembed
+ * @package   filter_ilos_oembed
  * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
@@ -31,7 +31,7 @@
  * @param $oldversion Version to be upgraded from.
  * @return bool Success.
  */
-function xmldb_filter_oembed_upgrade($oldversion) {
+function xmldb_filter_ilos_oembed_upgrade($oldversion) {
     global $CFG, $DB, $OUTPUT;
 
     return true;

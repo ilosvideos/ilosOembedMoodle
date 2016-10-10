@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language strings for component 'filter_oembed'
+ * Language strings for component 'filter_ilos_oembed'
  *
- * @package   filter_oembed
+ * @package   filter_ilos_oembed
  * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
