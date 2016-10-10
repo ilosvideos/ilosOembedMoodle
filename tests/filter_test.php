@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for the filter_oembed.
+ * Unit tests for the filter_ilos_oembed.
  *
- * @package    filter_oembed
+ * @package    filter_ilos_oembed
  * @author Sushant Gawali (sushant@introp.net)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @copyright Microsoft, Inc.
@@ -26,13 +26,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/filter/oembed/filter.php');
+require_once($CFG->dirroot . '/filter/ilos-oembed/filter.php');
 
 /**
- * @group filter_oembed
+ * @group filter_ilos_oembed
  * @group office365
  */
-class filter_oembed_testcase extends basic_testcase {
+class filter_ilos_oembed_testcase extends basic_testcase {
 
     protected $filter;
 
@@ -41,7 +41,7 @@ class filter_oembed_testcase extends basic_testcase {
      */
     protected function setUp() {
         parent::setUp();
-        $this->filter = new filter_oembed(context_system::instance(), array());
+        $this->filter = new filter_ilos_oembed(context_system::instance(), array());
     }
 
     /**

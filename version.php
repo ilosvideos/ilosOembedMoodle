@@ -15,9 +15,9 @@
 // along with Moodle-oembed-Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Filter for component 'filter_oembed'
+ * Filter for component 'filter_ilos_oembed'
  *
- * @package   filter_oembed
+ * @package   filter_ilos_oembed
  * @copyright 2012 Matthew Cannings, Sandwell College; modified 2015 by Microsoft, Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
@@ -29,6 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version = 2016062001;
 $plugin->requires = 2016052300;
-$plugin->component = 'filter_oembed';
+$plugin->component = 'filter_ilos_oembed';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '1.1.0.0';
