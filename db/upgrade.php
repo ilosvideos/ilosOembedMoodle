@@ -18,7 +18,7 @@
  * Filter for component 'filter_ilos_oembed'
  *
  * @package   filter_ilos_oembed
- * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.
+ * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.; modified 2016 Ilos Co
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  * Screencast (Mark Schall)
