@@ -120,7 +120,7 @@ class filter_ilos_oembed extends moodle_text_filter {
             return $clickableLink;
         }
 
-        $json = $this->curlCall($link, true);
+        $json = $this->curlCall($link);
 
         $error = $this->handleErrors($json);
         if($error === false)
@@ -160,21 +160,12 @@ class filter_ilos_oembed extends moodle_text_filter {
     /**
      * Makes the OEmbed request to the service that supports the protocol.
      *
-     * @param $url URL for the Oembed request
+     * @param $link
      * @return mixed|null|string The HTTP response object from the OEmbed request.
      */
-    private function curlCall($link, $noCache = false) {
-        static $cache;
+    private function curlCall($link) {
 
         $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
-
-        if (!isset($cache)) {
-            $cache = cache::make('filter_ilos_oembed', 'embeddata');
-        }
-
-        if (!$noCache && $ret = $cache->get(md5($url))) {
-            return json_decode($ret, true);
-        }
 
         $curl = new \curl();
         $ret = $curl->get($url);
@@ -184,7 +175,6 @@ class filter_ilos_oembed extends moodle_text_filter {
             return null;
         }
 
-        $cache->set(md5($url), $ret);
         $result = json_decode($ret, true);
         return $result;
     }
