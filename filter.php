@@ -57,46 +57,75 @@ class filter_ilos_oembed extends moodle_text_filter {
      */
     public function filter($text, array $options = array()) {
 
+        $hasPerformanceShortcut = $this->hasPerformanceShortcut($text);
+
+        if($hasPerformanceShortcut === true)
+        {
+            return $text;
+        }
+
+        return $this->doFilter($text);
+    }
+
+    /**
+     * @param $text
+     * @return mixed
+     * @throws dml_exception
+     */
+    private function doFilter($text)
+    {
+        $filteredText = $text;
+
+        if (get_config('filter_ilos_oembed', 'ilos')) {
+            $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
+            $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedIlosCallback'), $filteredText);
+        }
+
+        if (empty($filteredText) or $filteredText === $text) {
+            // Error or not filtered.
+            unset($filteredText);
+            return $text;
+        }
+
+        return $filteredText;
+    }
+
+    /**
+     * @param $text
+     * @return bool
+     */
+    private function hasPerformanceShortcut($text)
+    {
         if (!is_string($text) or empty($text)) {
             // Non string data can not be filtered anyway.
-            return $text;
+            return true;
         }
 
         if (stripos($text, '</a>') === false) {
             // Performance shortcut - all regexes below end with the </a> tag.
             // If not present nothing can match.
-            return $text;
+            return true;
         }
-
-        $newtext = $text; // We need to return the original value if regex fails!
-
-        if (get_config('filter_ilos_oembed', 'ilos')) {
-            $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
-            $newtext = preg_replace_callback($search, array(&$this, 'filter_ilos_oembed_iloscallback'), $newtext);
-        }
-
-        if (empty($newtext) or $newtext === $text) {
-            // Error or not filtered.
-            unset($newtext);
-            return $text;
-        }
-
-        return $newtext;
     }
 
     /**
      * @param $link
      * @return bool|string
      */
-    private function filter_ilos_oembed_iloscallback($link) {
-        //global $CFG;
-        $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
-        $json = $this->filter_ilos_oembed_curlcall($url, true);
+    private function filterOembedIlosCallback($link) {
 
-        $error = $this->filter_ilos_oembed_handle_error($json);
+        $clickableLink = $this->isLinkClickable($link);
+        if($clickableLink !== false)
+        {
+            return $clickableLink;
+        }
+
+        $json = $this->curlCall($link, true);
+
+        $error = $this->handleErrors($json);
         if($error === false)
         {
-            $embedCode = $this->filter_ilos_oembed_vidembed($json);
+            $embedCode = $this->getEmbedCode($json);
             return $embedCode;
         }
 
@@ -104,15 +133,25 @@ class filter_ilos_oembed extends moodle_text_filter {
     }
 
     /**
-     * Handles if the oembed service returned any error. For instance: You don't have permission to see the video
-     * @param $json
-     * @return bool|string
+     * In moodle there are two ways to add a link. Link and Media Link, if we use the Link option it should show just
+     * the link. Note: if you modify the link with the HTML editor this might not longer return the same result
+     * @param $link
+     * @return bool
      */
-    private function filter_ilos_oembed_handle_error($json)
+    private function isLinkClickable($link)
     {
-        //TODO maybe add link to the video?
-        if (preg_match('#^404|401|501#', $json)) {
-            return "Video could not be displayed: ".$json;
+        //$link[6] is the text inside the <a></a> tags. <a>example</a> returns example
+        //$link[0] is the original <a></a> tag
+        if($link[6] == "")
+        {
+            return $link[0];
+        }
+
+        $originalLink = $link[1].$link[3]."/".$link[4];
+
+        if($link[6] == $originalLink)
+        {
+            return $link[0];
         }
 
         return false;
@@ -124,8 +163,10 @@ class filter_ilos_oembed extends moodle_text_filter {
      * @param $url URL for the Oembed request
      * @return mixed|null|string The HTTP response object from the OEmbed request.
      */
-    private function filter_ilos_oembed_curlcall($url, $noCache = false) {
+    private function curlCall($link, $noCache = false) {
         static $cache;
+
+        $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
 
         if (!isset($cache)) {
             $cache = cache::make('filter_ilos_oembed', 'embeddata');
@@ -149,27 +190,34 @@ class filter_ilos_oembed extends moodle_text_filter {
     }
 
     /**
-     * Return the HTML content to be embedded given the response from the OEmbed request.
-     * It returns the embeddable HTML from the OEmbed request. An error message is returned if there was an error during
-     * the request.
-     *
-     * @param array $json Response object returned from the OEmbed request.
-     * @param string $params Additional parameters to include in the embed URL.
-     * @return string The HTML content to be embedded in the page.
+     * Handles if the oembed service returned any error. For instance: You don't have permission to see the video
+     * @param $json
+     * @return bool|string
      */
-    private function filter_ilos_oembed_vidembed($json, $params = '') {
-
+    private function handleErrors($json)
+    {
         if ($json === null) {
             return '<h3>'. get_string('connection_error', 'filter_ilos_oembed') .'</h3>';
         }
 
-        $embed = $json['html'];
-
-        if ($params != ''){
-            $embed = str_replace('?feature=oembed', '?feature=oembed'.htmlspecialchars($params), $embed );
+        //TODO maybe add link to the video?
+        if (preg_match('#^404|401|501#', $json)) {
+            return "Video could not be displayed: ".$json;
         }
 
-        return $embed;
+        return false;
+    }
+
+    /**
+     * Return the HTML content to be embedded given the response from the OEmbed request.
+     * It returns the embeddable HTML from the OEmbed request.
+     *
+     * @param array $json Response object returned from the OEmbed request.
+     * @return string The HTML content to be embedded in the page.
+     */
+    private function getEmbedCode($json) {
+
+        return $json['html'];
     }
 
 }
