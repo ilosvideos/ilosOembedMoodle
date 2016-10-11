@@ -67,6 +67,11 @@ class filter_ilos_oembed extends moodle_text_filter {
         return $this->doFilter($text);
     }
 
+    /**
+     * @param $text
+     * @return mixed
+     * @throws dml_exception
+     */
     private function doFilter($text)
     {
         $filteredText = $text;
@@ -85,6 +90,10 @@ class filter_ilos_oembed extends moodle_text_filter {
         return $filteredText;
     }
 
+    /**
+     * @param $text
+     * @return bool
+     */
     private function hasPerformanceShortcut($text)
     {
         if (!is_string($text) or empty($text)) {
