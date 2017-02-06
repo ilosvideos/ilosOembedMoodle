@@ -5,7 +5,7 @@ Embed code is retrieved from ilosvideos so should work even if the site changes 
 Installation:
 Download the source files. (zip file is available under download section)
 Unzip the package
-Copy the "ilos-oembed" folder to moodle/filter on the Moodle server.
+Copy the folder to moodle/filter on the Moodle server.
 Login as an admin on the Moodle site and install the filter.
 
 To use:
