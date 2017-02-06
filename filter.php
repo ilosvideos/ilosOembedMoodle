@@ -23,9 +23,9 @@
  * code based on the following filters...
  */
 
-define("ILOS_HOST", "cloud");
-
 defined('MOODLE_INTERNAL') || die();
+
+require_once('env.php');
 
 require_once($CFG->libdir.'/filelib.php');
 
