@@ -190,8 +190,7 @@ class filter_ilos_oembed extends moodle_text_filter {
             return '<h3>'. get_string('connection_error', 'filter_ilos_oembed') .'</h3>';
         }
 
-        //TODO maybe add link to the video?
-        if (preg_match('#^404|401|501#', $json)) {
+        if(!is_array($json) && preg_match('#^404|401|501#', $json)) {
             return "Video could not be displayed: ".$json;
         }
 
