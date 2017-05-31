@@ -77,8 +77,13 @@ class filter_ilos_oembed extends moodle_text_filter {
         $filteredText = $text;
 
         if (get_config('filter_ilos_oembed', 'ilos')) {
+            //Filter all anchor tags with an ilos pattern
             $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
             $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedIlosCallback'), $filteredText);
+
+            //Filter all paragraph tags with an ilos pattern
+            $search = '/(<p>( *?)https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)(\s|<\/p>)/is';
+            $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedNoLink'), $filteredText);
         }
 
         if (empty($filteredText) or $filteredText === $text) {
@@ -113,14 +118,36 @@ class filter_ilos_oembed extends moodle_text_filter {
      * @return bool|string
      */
     private function filterOembedIlosCallback($link) {
-
         $clickableLink = $this->isLinkClickable($link);
         if($clickableLink !== false)
         {
             return $clickableLink;
         }
 
-        $json = $this->curlCall($link);
+        $url = trim($link[1]).trim($link[3]).'/'.trim($link[4]);
+        $json = $this->curlCall($url);
+
+        $error = $this->handleErrors($json);
+        if($error === false)
+        {
+            $embedCode = $this->getEmbedCode($json);
+            return $embedCode;
+        }
+
+        return $error;
+    }
+
+    /**
+     * @param $link
+     * @return bool|string
+     */
+    private function filterOembedNoLink($link) {
+
+        $url = trim($link[1]).trim($link[4])."/".trim($link[5]);
+        $url = trim(strip_tags($url));
+
+        //TODO this can be refactored
+        $json = $this->curlCall($url);
 
         $error = $this->handleErrors($json);
         if($error === false)
@@ -160,12 +187,12 @@ class filter_ilos_oembed extends moodle_text_filter {
     /**
      * Makes the OEmbed request to the service that supports the protocol.
      *
-     * @param $link
+     * @param $url
      * @return mixed|null|string The HTTP response object from the OEmbed request.
      */
-    private function curlCall($link) {
+    private function curlCall($url) {
 
-        $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".trim($link[1]).trim($link[3]).'/'.trim($link[4])."&format=json";
+        $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".$url."&format=json";
 
         $curl = new \curl();
         $ret = $curl->get($url);
@@ -191,7 +218,7 @@ class filter_ilos_oembed extends moodle_text_filter {
         }
 
         if(!is_array($json) && preg_match('#^404|401|501#', $json)) {
-            return "Video could not be displayed: ".$json;
+            return "Resource could not be displayed: ".$json;
         }
 
         return false;
