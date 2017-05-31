@@ -80,10 +80,6 @@ class filter_ilos_oembed extends moodle_text_filter {
             //Filter all anchor tags with an ilos pattern
             $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
             $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedIlosCallback'), $filteredText);
-
-            //Filter all paragraph tags with an ilos pattern
-            $search = '/(<p>( *?)https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)(\s|<\/p>)/is';
-            $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedNoLink'), $filteredText);
         }
 
         if (empty($filteredText) or $filteredText === $text) {
@@ -118,6 +114,7 @@ class filter_ilos_oembed extends moodle_text_filter {
      * @return bool|string
      */
     private function filterOembedIlosCallback($link) {
+
         $clickableLink = $this->isLinkClickable($link);
         if($clickableLink !== false)
         {
@@ -125,28 +122,6 @@ class filter_ilos_oembed extends moodle_text_filter {
         }
 
         $url = trim($link[1]).trim($link[3]).'/'.trim($link[4]);
-        $json = $this->curlCall($url);
-
-        $error = $this->handleErrors($json);
-        if($error === false)
-        {
-            $embedCode = $this->getEmbedCode($json);
-            return $embedCode;
-        }
-
-        return $error;
-    }
-
-    /**
-     * @param $link
-     * @return bool|string
-     */
-    private function filterOembedNoLink($link) {
-
-        $url = trim($link[1]).trim($link[4])."/".trim($link[5]);
-        $url = trim(strip_tags($url));
-
-        //TODO this can be refactored
         $json = $this->curlCall($url);
 
         $error = $this->handleErrors($json);
@@ -176,8 +151,9 @@ class filter_ilos_oembed extends moodle_text_filter {
 
         $originalLink = $link[1].$link[3]."/".$link[4];
 
-        if($link[6] == $originalLink)
-        {
+        $isBlankTarget = trim($link[5]) == 'class="_blanktarget"';
+
+        if(!$isBlankTarget && $link[6] == $originalLink) {
             return $link[0];
         }
 
