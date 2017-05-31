@@ -82,7 +82,7 @@ class filter_ilos_oembed extends moodle_text_filter {
             $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedIlosCallback'), $filteredText);
 
             //Filter all paragraph tags with an ilos pattern
-            $search = '/(<p>( *?)https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)<\/p>/is';
+            $search = '/(<p>( *?)https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)(\s|<\/p>)/is';
             $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedNoLink'), $filteredText);
         }
 
