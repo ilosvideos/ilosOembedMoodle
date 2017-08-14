@@ -114,13 +114,14 @@ class filter_ilos_oembed extends moodle_text_filter {
      * @return bool|string
      */
     private function filterOembedIlosCallback($link) {
-
         $clickableLink = $this->isLinkClickable($link);
-        if($clickableLink !== false)
-        {
-            return $clickableLink;
-        }
 
+        $isButton = $this->isButton($link);
+
+        if($isButton !== false)
+        {
+            return $isButton;
+        }
         $url = trim($link[1]).trim($link[3]).'/'.trim($link[4]);
         $json = $this->curlCall($url);
 
@@ -132,6 +133,20 @@ class filter_ilos_oembed extends moodle_text_filter {
         }
 
         return $error;
+    }
+
+    /**
+     * @param $link
+     * @return bool
+     * This is to prevent the styled record button link to remain styled
+     */
+    private function isButton($link) {
+        //TODO maybe find a different way to detect an ilos buttons, maybe through a class
+        if(strpos($link[5], 'background-color:#F94E4E') > 0){
+            return $link[0];
+        }
+
+        return false;
     }
 
     /**
