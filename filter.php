@@ -138,11 +138,20 @@ class filter_ilos_oembed extends moodle_text_filter {
     /**
      * @param $link
      * @return bool
-     * This is to prevent the styled record button link to remain styled
+     * This is to prevent the styled record button link to remain styled, we know the new button will have a class ilos-button-handle
      */
     private function isButton($link) {
-        //TODO maybe find a different way to detect an ilos buttons, maybe through a class
+        if(strpos($link[5], 'ilos-button-handle') > 0){
+            return $link[0];
+        }
+
+        //fallback to old way of doing it (old color)
         if(strpos($link[5], 'background-color:#F94E4E') > 0){
+            return $link[0];
+        }
+
+        //fallback to old way of doing it (new color)
+        if(strpos($link[5], 'background-color:#F72B2B') > 0){
             return $link[0];
         }
 

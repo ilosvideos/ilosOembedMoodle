@@ -27,8 +27,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2017081401;
+$plugin->version = 2017101801;
 $plugin->requires = 2016052300;
 $plugin->component = 'filter_ilos_oembed';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.6.1.0';
+$plugin->release = '1.7.0.0';
