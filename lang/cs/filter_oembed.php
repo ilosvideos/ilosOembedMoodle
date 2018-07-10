@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language strings for component 'filter_ilos_oembed'
+ * Language strings for component 'filter_vidgrid_oembed'
  *
- * @package   filter_ilos_oembed
- * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft Inc.; modified 2016 by Ilos Co
+ * @package   filter_vidgrid_oembed
+ * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft Inc.; modified 2018 by VidGrid
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  * Screencast (Mark Schall)
@@ -26,5 +26,5 @@
  */
 
 $string['filtername'] = 'Filtr oEmbed';
-$string['ilos'] = 'ilos';
+$string['vidgrid'] = 'vidgrid';
 $string['connection_error'] = 'Při přístupu k vloženému médiu došlo k chybě. Zkuste aktualizovat stránku.';

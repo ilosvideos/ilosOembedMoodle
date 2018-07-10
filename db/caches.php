@@ -17,7 +17,7 @@
 /**
  * oEmbed cache definitions
  *
- * @package    filter_ilos_oembed
+ * @package    filter_vidgrid_oembed
  * @copyright  2016 Blackboard Inc.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

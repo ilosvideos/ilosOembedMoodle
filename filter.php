@@ -15,10 +15,10 @@
 // along with Moodle-oembed-Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Filter for component 'filter_ilos_oembed'
+ * Filter for component 'filter_vidgrid_oembed'
  *
- * @package   filter_ilos_oembed
- * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.; modified 2016 Ilos Co
+ * @package   filter_vidgrid_oembed
+ * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.; modified 2018 VidGrid
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  */
@@ -33,9 +33,9 @@ require_once($CFG->libdir.'/filelib.php');
  * Filter for processing HTML content containing links to media from services that support the OEmbed protocol.
  * The filter replaces the links with the embeddable content returned from the service via the Oembed protocol.
  *
- * @package    filter_ilos_oembed
+ * @package    filter_vidgrid_oembed
  */
-class filter_ilos_oembed extends moodle_text_filter {
+class filter_vidgrid_oembed extends moodle_text_filter {
 
     /**
      * Set up the filter using settings provided in the admin settings page.
@@ -76,10 +76,10 @@ class filter_ilos_oembed extends moodle_text_filter {
     {
         $filteredText = $text;
 
-        if (get_config('filter_ilos_oembed', 'ilos')) {
-            //Filter all anchor tags with an ilos pattern
-            $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.ILOS_HOST.'\.)?)(ilos\.video|ilosvideos\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
-            $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedIlosCallback'), $filteredText);
+        if (get_config('filter_vidgrid_oembed', 'vidgrid')) {
+            //Filter all anchor tags with an vidgrid pattern
+            $search = '/<a\s[^>]*href="(https?:\/\/(www\.|'.APP_HOST.'\.)?)(use\.vg|vidgrid\.com\/view)\/(.*?)"(.*?)>(.*?)<\/a>/is';
+            $filteredText = preg_replace_callback($search, array(&$this, 'filterOembedCallback'), $filteredText);
         }
 
         if (empty($filteredText) or $filteredText === $text) {
@@ -113,7 +113,7 @@ class filter_ilos_oembed extends moodle_text_filter {
      * @param $link
      * @return bool|string
      */
-    private function filterOembedIlosCallback($link) {
+    private function filterOembedCallback($link) {
         $clickableLink = $this->isLinkClickable($link);
 
         $isButton = $this->isButton($link);
@@ -192,7 +192,7 @@ class filter_ilos_oembed extends moodle_text_filter {
      */
     private function curlCall($url) {
 
-        $url = "https://".ILOS_HOST.".ilosvideos.com/oembed?url=".$url."&format=json";
+        $url = "https://".APP_HOST.".vidgrid.com/oembed?url=".$url."&format=json";
 
         $curl = new \curl();
         $ret = $curl->get($url);
@@ -214,7 +214,7 @@ class filter_ilos_oembed extends moodle_text_filter {
     private function handleErrors($json)
     {
         if ($json === null) {
-            return '<h3>'. get_string('connection_error', 'filter_ilos_oembed') .'</h3>';
+            return '<h3>'. get_string('connection_error', 'filter_vidgrid_oembed') .'</h3>';
         }
 
         if(!is_array($json) && preg_match('#^404|401|501#', $json)) {

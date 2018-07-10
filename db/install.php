@@ -15,10 +15,10 @@
 // along with Moodle-oembed-Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Filter for component 'filter_ilos_oembed'
+ * Filter for component 'filter_vidgrid_oembed'
  *
- * @package   filter_ilos_oembed
- * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.; modified 2016 Ilos Co
+ * @package   filter_vidgrid_oembed
+ * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.; modified 2018 vidgrid Co
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  * Screencast (Mark Schall)
@@ -28,9 +28,9 @@
 /**
  * Installs the OEmbed filter.
  */
-function xmldb_filter_ilos_oembed_install() {
+function xmldb_filter_vidgrid_oembed_install() {
     global $CFG;
 
-    filter_set_global_state('filter/ilos_oembed', TEXTFILTER_ON);
+    filter_set_global_state('filter/vidgrid_oembed', TEXTFILTER_ON);
 }
 
