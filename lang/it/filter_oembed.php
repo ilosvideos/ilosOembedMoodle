@@ -18,7 +18,7 @@
  * Language strings for component 'filter_vidgrid_oembed'
  *
  * @package   filter_vidgrid_oembed
- * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft Inc.; modified 2016 by VidGrid
+ * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft Inc.; modified 2016 by VidGrid Inc.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  * Screencast (Mark Schall)
