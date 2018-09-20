@@ -15,10 +15,10 @@
 // along with Moodle-oembed-Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Filter for component 'filter_ilos_oembed'
+ * Filter for component 'filter_vidgrid_oembed'
  *
- * @package   filter_ilos_oembed
- * @copyright 2012 Matthew Cannings, Sandwell College; modified 2015 by Microsoft, Inc.; modified 2016 Ilos Co
+ * @package   filter_vidgrid_oembed
+ * @copyright 2012 Matthew Cannings, Sandwell College; modified 2015 by Microsoft, Inc.; modified 2018 VidGrid
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  * Screencast (Mark Schall)
@@ -29,6 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version = 2017101801;
 $plugin->requires = 2016052300;
-$plugin->component = 'filter_ilos_oembed';
+$plugin->component = 'filter_vidgrid_oembed';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '1.6.2.0';

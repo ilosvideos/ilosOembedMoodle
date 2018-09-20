@@ -1,3 +1,3 @@
 <?php
 
-define("ILOS_HOST", "app");
+define("APP_HOST", "app");

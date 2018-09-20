@@ -15,10 +15,10 @@
 // along with Moodle-oembed-Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Filter for component 'filter_ilos_oembed'
+ * Filter for component 'filter_vidgrid_oembed'
  *
- * @package   filter_ilos_oembed
- * @copyright 2012 Matthew Cannings, Sandwell College; modified 2015 by Microsoft, Inc.; modified 2016 Ilos Co
+ * @package   filter_vidgrid_oembed
+ * @copyright 2012 Matthew Cannings, Sandwell College; modified 2015 by Microsoft, Inc.; modified 2018 VidGrid
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  * Screencast (Mark Schall)
@@ -31,6 +31,6 @@ require_once(__DIR__.'/filter.php');
 
 if ($ADMIN->fulltree) {
     $torf = array('1' => new lang_string('yes'), '0' => new lang_string('no'));
-    $item = new admin_setting_configselect('filter_ilos_oembed/ilos', new lang_string('ilos', 'filter_ilos_oembed'), '', 1, $torf);
+    $item = new admin_setting_configselect('filter_vidgrid_oembed/vidgrid', new lang_string('vidgrid', 'filter_vidgrid_oembed'), '', 1, $torf);
     $settings->add($item);
 }

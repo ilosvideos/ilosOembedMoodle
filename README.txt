@@ -1,6 +1,6 @@
 Description:
-This is a text filter for Moodle that converts urls from ilosvideos into embeded content.
-Embed code is retrieved from ilosvideos so should work even if the site changes embed format.
+This is a text filter for Moodle that converts urls from vidgrid into embeded content.
+Embed code is retrieved from vidgrid so should work even if the site changes embed format.
 
 Installation:
 Download the source files. (zip file is available under download section)

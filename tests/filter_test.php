@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for the filter_ilos_oembed.
+ * Unit tests for the filter_vidgrid_oembed.
  *
- * @package    filter_ilos_oembed
+ * @package    filter_vidgrid_oembed
  * @author Sushant Gawali (sushant@introp.net)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @copyright Microsoft, Inc.
@@ -26,13 +26,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/filter/ilos-oembed/filter.php');
+require_once($CFG->dirroot . '/filter/vidgrid-oembed/filter.php');
 
 /**
- * @group filter_ilos_oembed
+ * @group filter_vidgrid_oembed
  * @group office365
  */
-class filter_ilos_oembed_testcase extends basic_testcase {
+class filter_vidgrid_oembed_testcase extends basic_testcase {
 
     protected $filter;
 
@@ -41,7 +41,7 @@ class filter_ilos_oembed_testcase extends basic_testcase {
      */
     protected function setUp() {
         parent::setUp();
-        $this->filter = new filter_ilos_oembed(context_system::instance(), array());
+        $this->filter = new filter_vidgrid_oembed(context_system::instance(), array());
     }
 
     /**
@@ -51,14 +51,14 @@ class filter_ilos_oembed_testcase extends basic_testcase {
      */
     public function test_filter() {
         return true;
-        $ilos = '<p><a href="https://app.ilosvideos.com/view/nacfQdQSXNUD">ilos video</a></p>';
+        $vidgrid = '<p><a href="https://app.vidgrid.com/view/nacfQdQSXNUD">VidGrid</a></p>';
 
-        $filterInput = $ilos;
+        $filterInput = $vidgrid;
 
         $filterOutput = $this->filter->filter($filterInput);
 
-        $ilosOutput = '<iframe width="640" height="360" allowTransparency="true" mozallowfullscreen webkitallowfullscreen allowfullscreen style="background-color:transparent;" frameBorder="0" src="https://app.ilosvideos.com/embed/nacfQdQSXNUD"></iframe>';
-        $this->assertContains($ilosOutput, $filterOutput, 'Ilos filter fails');
+        $vidgridOutput = '<iframe width="640" height="360" allowTransparency="true" mozallowfullscreen webkitallowfullscreen allowfullscreen style="background-color:transparent;" frameBorder="0" src="https://app.vidgrid.com/embed/nacfQdQSXNUD"></iframe>';
+        $this->assertContains($vidgridOutput, $filterOutput, 'vidgrid filter fails');
 
     }
 }
