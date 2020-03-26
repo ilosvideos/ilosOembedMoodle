@@ -21,6 +21,8 @@
  * @author Sushant Gawali (sushant@introp.net)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @copyright Microsoft, Inc.
+ * @copyright ilos 2017
+ * @copyright VidGrid 2018 - 2020
  */
 
 defined('MOODLE_INTERNAL') || die();

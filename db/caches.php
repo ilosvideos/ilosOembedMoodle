@@ -19,6 +19,8 @@
  *
  * @package    filter_vidgrid_oembed
  * @copyright  2016 Blackboard Inc.
+ * @copyright  ilos 2017
+ * @copyright  VidGrid 2018 - 2020
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $definitions = array(
