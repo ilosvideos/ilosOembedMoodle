@@ -18,9 +18,7 @@
  * Filter for component 'filter_vidgrid_oembed'
  *
  * @package   filter_vidgrid_oembed
- * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.
- * @copyright ilos 2017
- * @copyright VidGrid 2018 - 2020
+ * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft, Inc.; modified 2018 VidGrid
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * code based on the following filters...
  */
@@ -193,19 +191,22 @@ class filter_vidgrid_oembed extends moodle_text_filter {
      * @return mixed|null|string The HTTP response object from the OEmbed request.
      */
     private function curlCall($url) {
-
-        $url = "https://".APP_HOST.".vidgrid.com/oembed?url=".$url."&format=json";
-
-        $curl = new \curl();
-        $ret = $curl->get($url);
-
+        global $CFG;
+        $url = urlencode($url);
+        $url = "https://app.vidgrid.com/oembed?url=".$url."&format=json";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // return output as string.
+        curl_setopt($ch, CURLOPT_REFERER, $CFG->wwwroot);
+        $ret = curl_exec($ch);
         // Check if curl call fails.
-        if ($curl->errno != CURLE_OK) {
+        if(curl_error($ch)) {
+            curl_close($ch);
             return null;
         }
-
+        curl_close($ch);
         $result = json_decode($ret, true);
         return $result;
+
     }
 
     /**
