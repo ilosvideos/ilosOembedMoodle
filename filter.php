@@ -193,7 +193,7 @@ class filter_vidgrid_oembed extends moodle_text_filter {
     private function curlCall($url) {
         global $CFG;
         $url = urlencode($url);
-        $url = "https://app.vidgrid.com/oembed?url=".$url."&format=json";
+        $url = "https://".APP_HOST.".vidgrid.com/oembed?url=".$url."&format=json";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // return output as string.
         curl_setopt($ch, CURLOPT_REFERER, $CFG->wwwroot);
@@ -206,7 +206,6 @@ class filter_vidgrid_oembed extends moodle_text_filter {
         curl_close($ch);
         $result = json_decode($ret, true);
         return $result;
-
     }
 
     /**
